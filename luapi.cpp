@@ -55,7 +55,8 @@ int lua_say(lua_State *L)
 {
   std::string msg = lua_tostring(L,1);
   std::cout << "[C++] lua_say (" << msg << ")" << std::endl; 
-  print(*lua_maps[0], msg, 0, 0, WHITE);
+  //print(*lua_maps[0], msg, 0, 0, WHITE);
+  lua_maps[0]->toSay.push(msg);
   lua_pushnumber(L, 0);
   return 1;
 }

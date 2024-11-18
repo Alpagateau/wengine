@@ -9,4 +9,12 @@ struct Settings_t
   float fontSize = -1;
 };
 
+typedef enum CState 
+{
+  PRINTER=0,
+  QUESTION,
+  TYPING,
+  CSLEN,
+}CState;
+
 #endif

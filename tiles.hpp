@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <queue>
 #include "raylib.h"
 
 struct tile
@@ -32,6 +33,8 @@ struct tilemap
   bool transparent;
   std::vector<Color> mapping = {BLACK, RED, GREEN, BLUE, RAYWHITE};
   std::vector<tile> tiles;
+  std::queue<std::string> toSay; 
+  int maxLine = -1;
 };
 
 int loadTilesetCR(std::string,tileset&,int,int);

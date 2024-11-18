@@ -63,6 +63,8 @@ int loadTilesetCR(std::string path, tileset& out, int c, int r)
 
 int place(tilemap &tm, int posx, int posy, int v, Color col)
 {
+  if(tm.maxLine < posy)
+    tm.maxLine = posy;
   tm.tiles.push_back(
     (tile){posx, posy, v, col}
   );

@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "tiles.hpp"
 #include "luapi.hpp"
+#include "structs.hpp"
 
 int main(void)
 {
@@ -22,28 +23,36 @@ int main(void)
   if(settings.fontSize < 0)
   {
     std::cout << "coulnd't load the settings at all" << std::endl;
+    return 1;
   }
   tm.scale = settings.fontSize;
-  SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-  SetConfigFlags(FLAG_MSAA_4X_HINT);
+  SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT);
   InitWindow(screenWidth, screenHeight, "Console - Wiremole.exe");
   SetTargetFPS(60); // Set our game to run at 60 frames-per-second
-
+  
+  bool r = CheckLua(L, luaL_dofile(L, "./index.lua" ));
+  if(!r)
+    return 1;
   loadTilesetCR(settings.font, ts, 16, 16);
-  //loadTilesetCR("Alloy_curses_12x12.png" ,ts, 16, 16);
-  //loadTilesetCR("RDE_vector_48x48.png", ts, 16, 16);
-  /* 
-  print(tm, "Hello World!", 0, 0, WHITE);
-  print(tm, "Hello from raylib ! <smiley>", 0, 1, WHITE);
-  print(tm, "Hey, this is \na multiline:FF0000: string", 0, 2, WHITE);
-  print(tm, 
-        "<ndsn><ndnd><ndnd><ndnd><nnsd>\n<snsn><25><50><75><snsn>\n<sdnn><ndnd><ndnd><ndnd><snnd>",
-        5, 5, WHITE);
-  */
-  //---------------------------------------------------
-  // Main game loop
+
+  CState ConsoleState = PRINTER;
   while (!WindowShouldClose()) // TO CHANGE
   {
+    switch(ConsoleState)
+    {
+      case PRINTER:
+        {
+          if(tm.toSay.size() > 0)
+          {
+            print(tm, tm.toSay.front(), 0, tm.maxLine + 1, WHITE);
+            tm.toSay.pop();
+          }
+        }
+        break;
+      default:
+        std::cout << "Should not be reached" << std::endl;
+        break;
+    }
     BeginDrawing();
       ClearBackground(BLACK);
       draw(tm, ts, 800, 450);
