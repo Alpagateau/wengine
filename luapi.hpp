@@ -12,8 +12,14 @@ extern "C"
 }
 
 #include "structs.hpp"
+#include "tiles.hpp"
 
-bool CheckLua(lua_State*L, int r);
+void registerTilemap(tilemap&);
+
+int registerAll(lua_State *L);
+bool CheckLua(lua_State *L, int r);
 Settings_t loadSettings(lua_State*,std::string);
+
+int lua_say(lua_State *L);
 
 #endif

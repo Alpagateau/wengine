@@ -3,10 +3,10 @@
 struct charAlias 
 {
   std::string alias;
-  int c;
+  unsigned char c;
 };
 
-charAlias ctable[] = {
+const charAlias ctable[] = {
   (charAlias){"<empty>"          ,   0}, 
   (charAlias){"<smiley>"         ,   1},
   (charAlias){"<fsmiley>"        ,   2},
@@ -89,9 +89,11 @@ charAlias ctable[] = {
   (charAlias){"<span!>"          , 173},
   (charAlias){"<dl>"             , 174},
   (charAlias){"<dg>"             , 175},
+  (charAlias){"<0>"              ,   0}, //misplaced for continuity
   (charAlias){"<25>"             , 176},
   (charAlias){"<50>"             , 177},
   (charAlias){"<75>"             , 178},
+  (charAlias){"<100>"            , 219}, //same here
   // +1+
   // 4 2 d:= s:- n:' '
   // +3+

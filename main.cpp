@@ -12,11 +12,12 @@ int main(void)
   
   tileset ts;
   tilemap tm;
+  registerTilemap(tm);
   tm.scale = 20.0f;
   
   lua_State *L = luaL_newstate();
   luaL_openlibs(L);
-  
+  registerAll(L); 
   Settings_t settings = loadSettings(L, "settings.lua");
   if(settings.fontSize < 0)
   {
@@ -28,13 +29,17 @@ int main(void)
   InitWindow(screenWidth, screenHeight, "Console - Wiremole.exe");
   SetTargetFPS(60); // Set our game to run at 60 frames-per-second
 
-  loadTilesetCR(settings.font, ts,16, 16);
+  loadTilesetCR(settings.font, ts, 16, 16);
   //loadTilesetCR("Alloy_curses_12x12.png" ,ts, 16, 16);
   //loadTilesetCR("RDE_vector_48x48.png", ts, 16, 16);
-  
-  print(tm, "Hello World!", 0, 0);
-  print(tm, "Hello from raylib ! <smiley>", 0, 1);
-  print(tm, "Hey, this is \na multiline string", 0, 2);
+  /* 
+  print(tm, "Hello World!", 0, 0, WHITE);
+  print(tm, "Hello from raylib ! <smiley>", 0, 1, WHITE);
+  print(tm, "Hey, this is \na multiline:FF0000: string", 0, 2, WHITE);
+  print(tm, 
+        "<ndsn><ndnd><ndnd><ndnd><nnsd>\n<snsn><25><50><75><snsn>\n<sdnn><ndnd><ndnd><ndnd><snnd>",
+        5, 5, WHITE);
+  */
   //---------------------------------------------------
   // Main game loop
   while (!WindowShouldClose()) // TO CHANGE

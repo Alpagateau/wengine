@@ -1,5 +1,11 @@
 #include "luapi.hpp"
 
+int registerAll(lua_State *L)
+{
+  lua_register(L, "say", lua_say);
+  return 0;
+}
+
 bool CheckLua(lua_State *L, int r)
 {
   if(r != LUA_OK)
@@ -36,4 +42,20 @@ Settings_t loadSettings(lua_State* L,std::string path)
     }
   }
   return s;
+}
+
+std::vector<tilemap*> lua_maps;
+
+void registerTilemap(tilemap &tm)
+{
+  lua_maps.push_back(&tm);
+}
+
+int lua_say(lua_State *L)
+{
+  std::string msg = lua_tostring(L,1);
+  std::cout << "[C++] lua_say (" << msg << ")" << std::endl; 
+  print(*lua_maps[0], msg, 0, 0, WHITE);
+  lua_pushnumber(L, 0);
+  return 1;
 }

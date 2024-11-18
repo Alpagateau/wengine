@@ -1,6 +1,6 @@
 #include "tiles.hpp"
 #include <iostream>
-#include "alises.hpp"
+#include "aliases.hpp"
 
 int draw(tilemap &tm, tileset &ts, int maxX, int maxY)
 {
@@ -32,7 +32,7 @@ int draw(tilemap &tm, tileset &ts, int maxX, int maxY)
       fsize,
       (Vector2){0, 0}, 
       0.0f,
-      WHITE
+      t.c
       );
   }
   return 0;
@@ -61,31 +61,40 @@ int loadTilesetCR(std::string path, tileset& out, int c, int r)
   return 0;
 }
 
-int place(tilemap &tm, int posx, int posy, int v)
+int place(tilemap &tm, int posx, int posy, int v, Color col)
 {
   tm.tiles.push_back(
-    (tile){posx, posy, v}
+    (tile){posx, posy, v, col}
   );
   return 0;
 }
 
-char nameToChar(std::string name)
+unsigned char nameToChar(std::string name)
 {
-  char c = '\0';
+  unsigned char c = '\0';
   int l = sizeof(ctable)/sizeof(ctable[0]);
   for(int i = 0; i < l; i++)
   {
     if(ctable[i].alias == name)
     {
-      c = (int)ctable[i].c;
+      //std::cout << name << " | " << ctable[i].c << std::endl;
+      c =(unsigned char)ctable[i].c;
+      break;
     }
   }
   return c;
 }
 
-std::vector<char> conv(std::string msg)
+struct CChar 
 {
-  std::vector<char> out;
+  unsigned char c;
+  Color col;
+};
+
+std::vector<CChar> conv(std::string msg, Color oldC)
+{
+  Color curc = oldC;
+  std::vector<CChar> out;
   int idx = 0;
   while(idx < msg.size()){
     if(msg[idx]=='<'){
@@ -101,27 +110,54 @@ std::vector<char> conv(std::string msg)
           tooBig = true;
       }
       if(tooBig)
-        out.push_back(msg[idx]);
+        out.push_back({(unsigned char)msg[idx], curc});
       else {
-        out.push_back(nameToChar(buf));
-        idx+=buf.size();
+        unsigned char c = nameToChar(buf);
+        out.push_back({c, curc});
+        idx+=buf.size()-1;
       }
+    }
+    else if(msg[idx]==':')
+    {
+      std::string buf = "";
+      if(idx+7 < msg.size())
+      {
+        if(msg[idx+7]==':')
+        {
+          std::string hexcode = msg.substr(idx+1, 6);
+          //std::cout << "Color code : "  << hexcode << std::endl; 
+          Color newcol = {
+            (unsigned char)std::stoi(hexcode.substr(0, 2), 0, 16),
+            (unsigned char)std::stoi(hexcode.substr(2, 2), 0, 16),
+            (unsigned char)std::stoi(hexcode.substr(4, 2), 0, 16),
+            255,
+          };
+          //std::cout << "Color > " << (int)newcol.r << " : "
+          //                        << (int)newcol.g << " : "
+          //                        << (int)newcol.b << " : " << std::endl;
+          curc = newcol;
+          idx+=8;
+          continue;
+        }
+      }
+      out.push_back( {(unsigned char)msg[idx], curc});
     }
     else 
     {
-      out.push_back((char)msg[idx]);
+      out.push_back( {(unsigned char)msg[idx], curc});
     }
     idx++;
   }
   return out;
 }
 
-int write(tilemap &tm,std::string msg,int px,int py)
+int write(tilemap &tm,std::string msg,int px,int py, Color col)
 {
-  std::vector<char> cvd = conv(msg);
+  std::vector<CChar> cvd = conv(msg, col);
+  int doff = 0;
   for(int i = 0; i<cvd.size(); i++)
   {
-    place(tm, px+i, py, cvd[i]);
+    place(tm, px+i-doff, py, cvd[i].c, cvd[i].col);
   }
   return 0;
 }
@@ -145,12 +181,12 @@ std::vector<std::string> split(std::string s, char c)
   return out;
 }
 
-int print(tilemap &tm,std::string msg, int px, int py)
+int print(tilemap &tm,std::string msg, int px, int py, Color col)
 {
   std::vector<std::string> lines = split(msg, '\n');
   for(int i = 0; i<lines.size(); i++)
   {
-    write(tm, lines[i], px, py+i);
+    write(tm, lines[i], px, py+i, col);
   }
   return 0;
 }
