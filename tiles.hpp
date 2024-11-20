@@ -33,16 +33,16 @@ struct tilemap
   bool transparent;
   std::vector<Color> mapping = {BLACK, RED, GREEN, BLUE, RAYWHITE};
   std::vector<tile> tiles;
-  std::queue<std::string> toSay; 
   int maxLine = -1;
 };
 
 int loadTilesetCR(std::string,tileset&,int,int);
 //TODO
 //Somewhy, jenky texture scaling, to be improved
-int draw(tilemap&,tileset&,int,int);
-int place(tilemap&,int,int,int,Color);
-int write(tilemap&,std::string,int,int,Color);
-int print(tilemap&,std::string,int,int,Color);
-
+namespace tiles{
+  int draw(tilemap&,tileset&,int,int);
+  int place(tilemap&,int,int,int,Color);
+  int write(tilemap&,std::string,int,int,Color);
+  int print(tilemap&,std::string,int,int,Color);
+}
 #endif 

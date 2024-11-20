@@ -1,2 +1,2 @@
 #/usr/bin/zsh
-g++ *.cpp -o ./build/test -L./lua54 -llua -lraylib -g
+g++ main.cpp game.cpp tiles.cpp luapi.cpp -o ./build/test -L./lua54 -llua -lraylib -g -I./

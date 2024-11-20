@@ -1,66 +1,36 @@
 #include <iostream>
-#include <vector>
-
-#include "raylib.h"
-#include "tiles.hpp"
+#include <unistd.h>
+#include <fcntl.h>
+#include "game.hpp"
 #include "luapi.hpp"
-#include "structs.hpp"
 
 int main(void)
-{
-  const int screenWidth = 800;
-  const int screenHeight = 450; 
+{ 
+  int p1[2]; // Game sends : lua receives
+  int p2[2]; // Lua sends : Game receives 
+  if(pipe(p1) == -1) {return 1;}
+  if(pipe(p2) == -1) {return 1;}
   
-  tileset ts;
-  tilemap tm;
-  registerTilemap(tm);
-  tm.scale = 20.0f;
-  
-  lua_State *L = luaL_newstate();
-  luaL_openlibs(L);
-  registerAll(L); 
-  Settings_t settings = loadSettings(L, "settings.lua");
-  if(settings.fontSize < 0)
+  if(fcntl(p2[0], F_SETFL, O_NONBLOCK) < 0)
+    {return 3;}
+
+  int pid = fork();
+  if(pid == -1) {return 2;}
+  if(pid == 0)
   {
-    std::cout << "coulnd't load the settings at all" << std::endl;
-    return 1;
+    close(p2[0]);
+    close(p1[1]);
+    LuaServer(p1, p2);
+    close(p2[1]);
+    close(p1[0]);
   }
-  tm.scale = settings.fontSize;
-  SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT);
-  InitWindow(screenWidth, screenHeight, "Console - Wiremole.exe");
-  SetTargetFPS(60); // Set our game to run at 60 frames-per-second
-  
-  bool r = CheckLua(L, luaL_dofile(L, "./index.lua" ));
-  if(!r)
-    return 1;
-  loadTilesetCR(settings.font, ts, 16, 16);
-
-  CState ConsoleState = PRINTER;
-  while (!WindowShouldClose()) // TO CHANGE
+  else 
   {
-    switch(ConsoleState)
-    {
-      case PRINTER:
-        {
-          if(tm.toSay.size() > 0)
-          {
-            print(tm, tm.toSay.front(), 0, tm.maxLine + 1, WHITE);
-            tm.toSay.pop();
-          }
-        }
-        break;
-      default:
-        std::cout << "Should not be reached" << std::endl;
-        break;
-    }
-    BeginDrawing();
-      ClearBackground(BLACK);
-      draw(tm, ts, 800, 450);
-    EndDrawing();
+    close(p1[0]);
+    close(p2[1]);
+    GameProcess(p1, p2);
+    close(p1[1]);
+    close(p2[0]);
   }
-
-  CloseWindow();
-  lua_close(L);
-
   return 0;
 }

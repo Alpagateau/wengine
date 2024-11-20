@@ -2,7 +2,7 @@
 #include <iostream>
 #include "aliases.hpp"
 
-int draw(tilemap &tm, tileset &ts, int maxX, int maxY)
+int tiles::draw(tilemap &tm, tileset &ts, int maxX, int maxY)
 {
   for(int i = 0; i < tm.tiles.size(); i++)
   {
@@ -61,10 +61,22 @@ int loadTilesetCR(std::string path, tileset& out, int c, int r)
   return 0;
 }
 
-int place(tilemap &tm, int posx, int posy, int v, Color col)
+int tiles::place(tilemap &tm, int posx, int posy, int v, Color col)
 {
-  if(tm.maxLine < posy)
+  if(tm.maxLine < posy){
     tm.maxLine = posy;
+  }
+  for(int i = 0; i < tm.tiles.size(); i++)
+  {
+    if(tm.tiles[i].posx == posx)
+    {
+      if(tm.tiles[i].posy == posy)
+      {
+        tm.tiles[i] = (tile){posx, posy, v, col};
+        return 0;
+      }
+    }
+  }
   tm.tiles.push_back(
     (tile){posx, posy, v, col}
   );
@@ -153,7 +165,7 @@ std::vector<CChar> conv(std::string msg, Color oldC)
   return out;
 }
 
-int write(tilemap &tm,std::string msg,int px,int py, Color col)
+int tiles::write(tilemap &tm,std::string msg,int px,int py, Color col)
 {
   std::vector<CChar> cvd = conv(msg, col);
   int doff = 0;
@@ -183,7 +195,7 @@ std::vector<std::string> split(std::string s, char c)
   return out;
 }
 
-int print(tilemap &tm,std::string msg, int px, int py, Color col)
+int tiles::print(tilemap &tm,std::string msg, int px, int py, Color col)
 {
   std::vector<std::string> lines = split(msg, '\n');
   for(int i = 0; i<lines.size(); i++)

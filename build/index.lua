@@ -5,10 +5,14 @@ local imports = {
 
 State = {
   name = "Anon",
+  val=0
 }
 
-for key,value in pairs(imports) do
-  if value.nextState ~= nil then
-    value.nextState()
+function NextState()
+  print("[LUA] Next State called")
+  for key,value in pairs(imports) do
+    if value.nextState ~= nil then
+      value.nextState()
+    end
   end
 end
