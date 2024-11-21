@@ -1,11 +1,20 @@
 #ifndef LUAPI_HPP
 #define LUAPI_HPP 
-#include <unistd.h>
 #include <iostream>
 #include <string>
-#include <sol/sol.hpp>
+#include <thread>
+#include <mutex>
+
+//Somehow, i only got it to build on windows like this....
+#ifdef __linux__ 
+  #include <unistd.h>
+  #include <sol/sol.hpp>
+#elif _WIN32
+  #include <sol.hpp>
+#endif
+
 #define SOL_ALL_SAFTIES_ON 1
 
-int LuaServer(int[2], int[2]);
+int LuaServer();
 void say(std::string);
 #endif

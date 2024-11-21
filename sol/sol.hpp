@@ -34,7 +34,11 @@
 
 // beginning of sol/version.hpp
 
-#include <sol/config.hpp>
+#ifdef __linux__ 
+  #include <sol/config.hpp>
+#elif _WIN32
+  #include <config.hpp>
+#endif 
 
 #define SOL_VERSION_MAJOR 3
 #define SOL_VERSION_MINOR 2
