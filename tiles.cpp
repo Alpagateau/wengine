@@ -19,7 +19,7 @@ int tiles::draw(tilemap &tm, tileset &ts, int maxX, int maxY)
     int tposy = (int)(t.val - tposx) / rat;
     if(!tm.transparent)
       DrawRectangle(nposx, nposy, s, s, BLACK);
-    
+     
     Rectangle frec = {
       tposx*ts.twidth,
       tposy*ts.theight,

@@ -1,8 +1,12 @@
 #include "luapi.hpp"
 
 extern std::mutex mtx;
-extern bool CanRead, CanContinue;
+extern Settings_t settings; 
+extern int CanRead; 
+extern bool CanContinue, Terminate;
 extern std::string Message;
+extern std::vector<std::string> opts;
+extern int choice;
 
 int LuaServer()
 {
@@ -10,22 +14,80 @@ int LuaServer()
   lua.open_libraries(
     sol::lib::base,
     sol::lib::io,
-    sol::lib::math
+    sol::lib::os,
+    sol::lib::math,
+    sol::lib::package
   );
+  
+  std::cout << "[LUA] ==Loading Settings==" << std::endl;
+  lua.script_file("settings.lua");
+  Settings_t temps;
+  temps.font = lua["Font"].get<std::string>();
+  temps.fontSize = lua["FontSize"].get<float>();
+  mtx.lock();
+  settings = temps;
+  settings.loaded = true;
+  mtx.unlock();
+  std::cout << "[LUA] ==Starting Scripts=="<<std::endl;
   lua["say"] = say;
-  lua.script_file("sayings.lua");
+  lua["ask"] = ask;
+  lua.script_file("./index.lua");
+  while(lua["State"]["fin"] != true)
+  {
+    if(Terminate)
+    {
+      lua["State"]["fin"] = true;
+    }
+    lua["NextState"]();
+  }
   return 0;
+}
+
+void ask(const sol::table& pos)
+{
+  if(Terminate)
+    return;
+  mtx.lock();opts.clear();mtx.unlock();
+  std::vector<sol::function> fs;
+  for(const auto& pair: pos)
+  {
+    if(pair.second.is<sol::table>())
+    {
+      sol::table subt = pair.second.as<sol::table>();
+      if(subt[1].is<std::string>())
+      {
+        //work with the string here
+        std::string s = subt[1].get<std::string>();
+        mtx.lock();
+        opts.push_back(s);
+        mtx.unlock();
+      }
+      if(subt[2].is<sol::function>())
+      {
+        //work with the associated function
+        sol::function f = subt[2].get<sol::function>();
+        fs.push_back(f);
+      } 
+    }
+  }
+  mtx.lock();
+  CanContinue = false;
+  CanRead = ASK;
+  mtx.unlock();
+  while(!CanContinue){}
+  fs[choice]();
 }
 
 void say(std::string msg)
 {
-  mtx.lock();
-  //std::cout << "[LUA] " << msg << " sent" << std::endl;
-  CanRead = true;
-  CanContinue = false;
-  Message = msg;
-  mtx.unlock();
-  while(!CanContinue)
-  {
+  if(!Terminate){
+    while(CanRead != NOTHING && CanRead > 2){}
+    mtx.lock();
+    CanRead = SAY;
+    CanContinue = false;
+    Message = msg;
+    mtx.unlock();
+    while(!CanContinue && !Terminate){}
   }
 }
+

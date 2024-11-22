@@ -1,15 +1,15 @@
 local imports = {
-  require("scripts/test"),
-  require("scripts/test2"),
+  require("scripts/chap1"),
 }
 
 State = {
   name = "Anon",
-  val=0
+  fin = false,
+  chap = 1
 }
 
 function NextState()
-  print("[LUA] Next State called")
+  if State["fin"]==true then return end
   for key,value in pairs(imports) do
     if value.nextState ~= nil then
       value.nextState()

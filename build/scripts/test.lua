@@ -4,8 +4,8 @@ return {
       State["val"]=State["val"]+1
       ask({
       {
-        msg = "Hello world",
-        method=function ()
+        "Hello world",
+        function ()
           print("[LUA] Hello world from ask")
         end
       }

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <atomic>
 #ifdef __linux__
   #include <unistd.h>
 #elif _WIN32 
@@ -10,9 +11,13 @@
 #include "luapi.hpp"
 
 std::mutex mtx;
-bool CanRead = false;
+int CanRead = NOTHING;
 bool CanContinue = false;
+bool Terminate = false;
+Settings_t settings;
 std::string Message = "";
+std::vector<std::string> opts;
+int choice;
 
 int main(void)
 { 
@@ -20,6 +25,10 @@ int main(void)
   std::thread lua_thread(LuaServer); 
   std::cout << "====Starting GameThread===" << std::endl;
   GameProcess();
+  mtx.lock();
+  Terminate = true;
+  CanContinue = true;
+  mtx.unlock();
   lua_thread.join();
   return 0;
 }

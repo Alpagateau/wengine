@@ -15,6 +15,9 @@
 
 #define SOL_ALL_SAFTIES_ON 1
 
+#include "structs.hpp"
+
 int LuaServer();
 void say(std::string);
+void ask(const sol::table& pos);
 #endif
