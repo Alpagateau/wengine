@@ -1,25 +1,23 @@
 return {
 nextState = function()
-  if(State["chap"] ~= 1) then return end 
+  if(State["chap"] ~= 1) then return end
   if(State["intro"] == nil) then
     State["intro"] = 0
-    say("\"Abandon All Hope\"")
-    say("\"All Ye Who Enter\"")
-    say("That's a weird thing to have on your mat.")
-    say("I found myself in front of this door, not knowing what to expect")
-  end
-  if(State["intro"] == 0) then
-    ask(
-        {
-          {"knock",
-            function()
-              State["intro"] = 1
-              say("Knock knock knock")
-            end
-          },
-          {"read adress", function() say("5 Faust's street") end}
-        }
-      )
+    say("Me voila")
+    say("La porte est devant moi.")
+    State["toque"] = 0
+    while State["toque"] == 0 do
+      ask({
+          {"Relire l'adresse", function() say("92 rue des Vignoles") end},
+          {"Toquer",
+          function()
+            State["toque"] = 1
+          end},
+        })
+    end
+    say(":6A6A6A:Toc. toc. toc.")
+    say("")
+    --say("I found myself in front of this door, not knowing what to expect")
   end
 end
 }

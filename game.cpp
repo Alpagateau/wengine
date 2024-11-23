@@ -1,5 +1,7 @@
 #include <iostream>
+#include <sstream>
 #include <raylib.h>
+#include <fstream>
 #include <cmath>
 #include "game.hpp"
 #include "tiles.hpp"
@@ -20,8 +22,8 @@ int GameProcess()
   tileset ts;
   tilemap txtview;
   tilemap qview;
-  txtview.scale = 20.0f;
-  
+  tilemap imview;
+  txtview.scale = 20.0f; 
   bool l = false;
   while(!settings.loaded)
   {
@@ -45,8 +47,12 @@ int GameProcess()
   loadTilesetCR(settings.font, ts, 16, 16);
   txtview.scale = settings.fontSize;
   qview.scale = settings.fontSize;
-  tiles::write(txtview, "Hello from :DD2222:[C++]", 0, 0, WHITE);
-  tiles::write(qview, "Test of qview", 0, 0, WHITE);
+  imview.scale = settings.fontSize;
+  //tiles::write(txtview, "Hello from :DD2222:[C++]", 0, 0, WHITE);
+  //tiles::write(qview, "Test of qview", 0, 0, WHITE);
+  loadTSI("gradient.tsi", imview);
+  imview.posx = 10;
+  imview.posy = 3;
   double curTime = GetTime();
   while (!WindowShouldClose()) // TO CHANGE
   {
@@ -101,6 +107,7 @@ int GameProcess()
       ClearBackground(BLACK);
       tiles::draw(txtview, ts, screenWidth, screenHeight);
       if(CanRead == ASK){tiles::draw(qview, ts, screenWidth, screenHeight);}
+      tiles::draw(imview, ts, screenWidth, screenHeight);
     EndDrawing();
 
     //-------
@@ -139,4 +146,33 @@ int GameProcess()
   mtx.unlock();
 
   return 0;
+}
+
+
+int loadTSI(std::string path, tilemap& tm)
+{
+  std::string myText;
+  std::ifstream readim(path);
+  while(getline(readim, myText))
+  {
+    tile t;
+    std::stringstream ss;
+    ss << myText;
+    std::string temp;
+    getline(ss,temp,' ');
+    t.posx = std::stoi(temp);
+    getline(ss,temp,' ');
+    t.posy = std::stoi(temp);
+    getline(ss,temp,' ');
+    t.val = std::stoi(temp);
+    
+    getline(ss,temp,' ');
+    t.c.r = (char)std::stoi(temp);
+    getline(ss,temp,' ');
+    t.c.g = (char)std::stoi(temp);
+    getline(ss,temp,' ');
+    t.c.b = (char)std::stoi(temp);
+    tm.tiles.push_back(t);
+  }
+  return 1;
 }

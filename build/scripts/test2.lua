@@ -1,4 +1,0 @@
-return {
-  nextState = function()
-  end,
-}
