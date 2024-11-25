@@ -13,12 +13,15 @@ extern bool CanContinue, Terminate;
 extern std::string Message;
 extern std::vector<std::string> opts;
 extern int choice;
+extern std::string imgpath;
 
 int GameProcess()
 {
   int screenWidth = 800;
   int screenHeight = 450; 
   
+  std::string currentImg = "";
+
   tileset ts;
   tilemap txtview;
   tilemap qview;
@@ -34,7 +37,7 @@ int GameProcess()
   }
 
   SetConfigFlags(
-    FLAG_WINDOW_RESIZABLE | 
+    //FLAG_WINDOW_RESIZABLE | 
     FLAG_MSAA_4X_HINT
   );
   
@@ -46,13 +49,13 @@ int GameProcess()
   //loadTilesetCR("RDE_vector_48x48.png", ts, 16, 16);
   loadTilesetCR(settings.font, ts, 16, 16);
   txtview.scale = settings.fontSize;
+  txtview.margin = 1;
   qview.scale = settings.fontSize;
   imview.scale = settings.fontSize;
   //tiles::write(txtview, "Hello from :DD2222:[C++]", 0, 0, WHITE);
-  //tiles::write(qview, "Test of qview", 0, 0, WHITE);
-  loadTSI("gradient.tsi", imview);
-  imview.posx = 10;
-  imview.posy = 3;
+  //tiles::write(qview, "Test of qview", 0, 0, WHITE); 
+  imview.posx = 25;
+  imview.posy = 0;
   double curTime = GetTime();
   while (!WindowShouldClose()) // TO CHANGE
   {
@@ -61,7 +64,7 @@ int GameProcess()
       case SAY:
       if(Message != "")
       {
-        tiles::write(txtview, 
+        tiles::print(txtview, 
             Message, 0, 
             txtview.maxLine+1, 
             WHITE);
@@ -91,6 +94,12 @@ int GameProcess()
       break;
     }
     mtx.unlock();
+    
+    if(imgpath != currentImg)
+    {
+      currentImg = imgpath;
+      loadTSI(imgpath, imview);
+    }
     //Draw on the screen hehe
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight(); 
@@ -107,7 +116,7 @@ int GameProcess()
       ClearBackground(BLACK);
       tiles::draw(txtview, ts, screenWidth, screenHeight);
       if(CanRead == ASK){tiles::draw(qview, ts, screenWidth, screenHeight);}
-      tiles::draw(imview, ts, screenWidth, screenHeight);
+      if(currentImg != ""){tiles::draw(imview, ts, screenWidth, screenHeight);}
     EndDrawing();
 
     //-------
@@ -131,7 +140,7 @@ int GameProcess()
       }
     }
 
-    if(GetTime()-curTime > .5 && CanRead != ASK)
+    if(GetTime()-curTime > 2 && CanRead != ASK)
     {
       curTime = GetTime();
       mtx.lock();

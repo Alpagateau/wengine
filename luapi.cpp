@@ -7,6 +7,7 @@ extern bool CanContinue, Terminate;
 extern std::string Message;
 extern std::vector<std::string> opts;
 extern int choice;
+extern std::string imgpath;
 
 int LuaServer()
 {
@@ -31,6 +32,7 @@ int LuaServer()
   std::cout << "[LUA] ==Starting Scripts=="<<std::endl;
   lua["say"] = say;
   lua["ask"] = ask;
+  lua["loadImg"] = loadImg;
   lua.script_file("./index.lua");
   while(lua["State"]["fin"] != true)
   {
@@ -91,3 +93,10 @@ void say(std::string msg)
   }
 }
 
+void loadImg(std::string path)
+{
+  if(Terminate){return;}
+  mtx.lock();
+  imgpath = path;
+  mtx.unlock();
+}

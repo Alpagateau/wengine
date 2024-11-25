@@ -20,4 +20,5 @@
 int LuaServer();
 void say(std::string);
 void ask(const sol::table& pos);
+void loadImg(std::string path);
 #endif

@@ -18,6 +18,7 @@ Settings_t settings;
 std::string Message = "";
 std::vector<std::string> opts;
 int choice;
+std::string imgpath;
 
 int main(void)
 { 

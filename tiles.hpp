@@ -31,9 +31,9 @@ struct tilemap
   int posy = 0;
   float scale = 1;
   bool transparent;
-  std::vector<Color> mapping = {BLACK, RED, GREEN, BLUE, RAYWHITE};
   std::vector<tile> tiles;
   int maxLine = -1;
+  int margin = 0;
 };
 
 int loadTilesetCR(std::string,tileset&,int,int);
