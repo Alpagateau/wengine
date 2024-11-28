@@ -81,7 +81,7 @@ void ask(const sol::table& pos)
   fs[choice]();
 }
 
-void say(std::string msg, float ds)
+void say(std::string msg, float s)
 {
   if(!Terminate){
     while(CanRead != NOTHING && CanRead > 2){}
@@ -89,7 +89,7 @@ void say(std::string msg, float ds)
     CanRead = SAY;
     CanContinue = false;
     Message = msg;
-    Waiting = (int)(ds*10);
+    Waiting = (int)(s*10);
     mtx.unlock();
     while(!CanContinue && !Terminate){}
   }

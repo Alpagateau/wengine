@@ -45,15 +45,22 @@ int GameProcess()
     screenWidth, 
     screenHeight, 
     "Console - Wiremole.exe");
+  InitAudioDevice();
   SetTargetFPS(60); // Set our game to run at 60 frames-per-second 
-  //loadTilesetCR("RDE_vector_48x48.png", ts, 16, 16);
-  loadTilesetCR(settings.font, ts, 16, 16);
+  
+  //Load sounds
+  Sound blipt = LoadSound("./res/blipt.wav");
+  Sound blipa = LoadSound("./res/blipa.wav");
+
+  RenderTexture2D target = LoadRenderTexture(screenWidth, screenHeight);
+  Shader shader = LoadShader(0, TextFormat("./res/shader.frag", GLSL_VERSION));
+
+  loadTilesetCR("./res/"+settings.font, ts, 16, 16);
   txtview.scale = settings.fontSize;
   txtview.margin = 1;
   qview.scale = settings.fontSize;
   imview.scale = settings.fontSize;
-  //tiles::write(txtview, "Hello from :DD2222:[C++]", 0, 0, WHITE);
-  //tiles::write(qview, "Test of qview", 0, 0, WHITE); 
+  
   imview.posx = 25;
   imview.posy = 0;
   double curTime = GetTime();
@@ -69,10 +76,10 @@ int GameProcess()
             txtview.maxLine+1, 
             WHITE);
         Message = "";
+        PlaySound(blipt);
       }
       CanRead = NOTHING;
       break;
-
       case ASK: 
         if(opts.size() > 0)
         {
@@ -119,21 +126,24 @@ int GameProcess()
     qview.posy = nop;
     
      GameRender(
-      txtview, 
-      qview, 
-      imview, 
-      ts, 
-      screenWidth, 
-      screenHeight,
-      currentImg);
+      txtview, qview, imview, ts, 
+      screenWidth, screenHeight,
+      currentImg, target, shader);
     //-------
     //INPUTS 
     //-------
-    
-    if(IsKeyPressed(KEY_UP))
-      choice++;
-    if(IsKeyPressed(KEY_DOWN))
-      choice--;
+    if(CanRead == ASK){ 
+      if(IsKeyPressed(KEY_UP))
+      {
+        choice++;
+        PlaySound(blipa);
+      }
+      if(IsKeyPressed(KEY_DOWN))
+      {
+        choice--;
+        PlaySound(blipa);
+      }
+    }
     
     if(!CanContinue && CanRead == ASK)
     {
@@ -160,6 +170,8 @@ int GameProcess()
     }
   }
 
+  
+  CloseAudioDevice();
   CloseWindow();
   mtx.lock();
   Terminate = true;
@@ -175,13 +187,28 @@ int GameRender(
   tileset& ts, 
   int screenWidth, 
   int screenHeight,
-  std::string currentImg)
+  std::string currentImg,
+  RenderTexture& target,
+  Shader& shader)
 {
-  BeginDrawing();
+  BeginTextureMode(target);
     ClearBackground(BLACK);
     tiles::draw(txtview, ts, screenWidth, screenHeight);
     if(CanRead == ASK){tiles::draw(qview, ts, screenWidth, screenHeight);}
     if(currentImg != ""){tiles::draw(imview, ts, screenWidth, screenHeight);}
+  EndTextureMode();
+
+  BeginDrawing();
+    BeginShaderMode(shader);
+      DrawTextureRec(
+        target.texture, 
+        (Rectangle){0, 0, 
+          (float)target.texture.width, 
+          (float)-target.texture.height 
+          },
+        (Vector2){ 0, 0 }, 
+        WHITE);
+    EndShaderMode();
   EndDrawing();
   return 0;
 }
@@ -190,7 +217,7 @@ int GameRender(
 int loadTSI(std::string path, tilemap& tm)
 {
   std::string myText;
-  std::ifstream readim(path);
+  std::ifstream readim("./res/"+path);
   tm.tiles.clear();
   while(getline(readim, myText))
   {
