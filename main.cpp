@@ -11,7 +11,7 @@
 #include "luapi.hpp"
 
 std::mutex mtx;
-int CanRead = NOTHING;
+int CanRead = NOTHING, Waiting = 0;
 bool CanContinue = false;
 bool Terminate = false;
 Settings_t settings;

@@ -18,7 +18,8 @@
 #include "structs.hpp"
 
 int LuaServer();
-void say(std::string);
+void say(std::string, float ds);
 void ask(const sol::table& pos);
 void loadImg(std::string path);
+void clr();
 #endif

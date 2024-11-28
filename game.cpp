@@ -8,7 +8,7 @@
 
 extern std::mutex mtx;
 extern Settings_t settings;
-extern int CanRead;
+extern int CanRead, Waiting;
 extern bool CanContinue, Terminate;
 extern std::string Message;
 extern std::vector<std::string> opts;
@@ -57,7 +57,7 @@ int GameProcess()
   imview.posx = 25;
   imview.posy = 0;
   double curTime = GetTime();
-  while (!WindowShouldClose()) // TO CHANGE
+  while (!WindowShouldClose()) // TO CHANGER 
   {
     mtx.lock();
     switch(CanRead){
@@ -92,6 +92,11 @@ int GameProcess()
           }
         }
       break;
+      case CLR:
+        txtview.tiles.clear();
+        txtview.maxLine = -1;
+        CanRead = 0;
+      break;
     }
     mtx.unlock();
     
@@ -112,13 +117,15 @@ int GameProcess()
     int nop = (int)std::floor((float)screenHeight/qview.scale)-(qview.maxLine+1);
     txtview.posy = npy;
     qview.posy = nop;
-    BeginDrawing();
-      ClearBackground(BLACK);
-      tiles::draw(txtview, ts, screenWidth, screenHeight);
-      if(CanRead == ASK){tiles::draw(qview, ts, screenWidth, screenHeight);}
-      if(currentImg != ""){tiles::draw(imview, ts, screenWidth, screenHeight);}
-    EndDrawing();
-
+    
+     GameRender(
+      txtview, 
+      qview, 
+      imview, 
+      ts, 
+      screenWidth, 
+      screenHeight,
+      currentImg);
     //-------
     //INPUTS 
     //-------
@@ -140,11 +147,15 @@ int GameProcess()
       }
     }
 
-    if(GetTime()-curTime > 2 && CanRead != ASK)
+    if(GetTime()-curTime > 0.1 && CanRead != ASK && Waiting > 0)
     {
       curTime = GetTime();
       mtx.lock();
-      CanContinue = true;
+      Waiting--;
+      if(Waiting == 0)
+      {
+        CanContinue = true;
+      }
       mtx.unlock();
     }
   }
@@ -157,11 +168,30 @@ int GameProcess()
   return 0;
 }
 
+int GameRender(
+  tilemap& txtview, 
+  tilemap& qview, 
+  tilemap& imview, 
+  tileset& ts, 
+  int screenWidth, 
+  int screenHeight,
+  std::string currentImg)
+{
+  BeginDrawing();
+    ClearBackground(BLACK);
+    tiles::draw(txtview, ts, screenWidth, screenHeight);
+    if(CanRead == ASK){tiles::draw(qview, ts, screenWidth, screenHeight);}
+    if(currentImg != ""){tiles::draw(imview, ts, screenWidth, screenHeight);}
+  EndDrawing();
+  return 0;
+}
+
 
 int loadTSI(std::string path, tilemap& tm)
 {
   std::string myText;
   std::ifstream readim(path);
+  tm.tiles.clear();
   while(getline(readim, myText))
   {
     tile t;

@@ -2,7 +2,7 @@
 
 extern std::mutex mtx;
 extern Settings_t settings; 
-extern int CanRead; 
+extern int CanRead, Waiting; 
 extern bool CanContinue, Terminate;
 extern std::string Message;
 extern std::vector<std::string> opts;
@@ -32,6 +32,7 @@ int LuaServer()
   std::cout << "[LUA] ==Starting Scripts=="<<std::endl;
   lua["say"] = say;
   lua["ask"] = ask;
+  lua["clr"] = clr;
   lua["loadImg"] = loadImg;
   lua.script_file("./index.lua");
   while(lua["State"]["fin"] != true)
@@ -80,7 +81,7 @@ void ask(const sol::table& pos)
   fs[choice]();
 }
 
-void say(std::string msg)
+void say(std::string msg, float ds)
 {
   if(!Terminate){
     while(CanRead != NOTHING && CanRead > 2){}
@@ -88,9 +89,17 @@ void say(std::string msg)
     CanRead = SAY;
     CanContinue = false;
     Message = msg;
+    Waiting = (int)(ds*10);
     mtx.unlock();
     while(!CanContinue && !Terminate){}
   }
+}
+
+void clr()
+{
+  mtx.lock();
+  CanRead = CLR;
+  mtx.unlock();
 }
 
 void loadImg(std::string path)
