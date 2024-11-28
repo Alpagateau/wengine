@@ -22,37 +22,37 @@ nextState = function()
         })
     end
     loadImg("door.tsi")
-    say(":6A6A6A:Toc. toc. toc.\n ",20)
-    say("Je vois une ombre",20)
-    say("passer devant l'oeilleton")
-    say("\n<dl>C'est pour quoi ?<dg>\n ")
-    say("Une vielle dame ouvre la\n porte\n ")
-    say("\"Bonjour madame !\"")
-    say("\"Je viens vous parler de")
-    say("J<é>sus christ\"")
-    say("\"Notre sauveur a tous\"")
-    say("\"Auriez vous un peu de\n temps a m'accorder?\"\n ")
-    say("Elle m'observe d'un\n regard doux.\n ")
-    say("<dl>Entre donc<dg>")
-    say("<dl>Viens prendre un th<é><dg>")
+    say(":6A6A6A:Toc. toc. toc.\n ",2)
+    say("Je vois une ombre",2)
+    say("passer devant l'oeilleton", 2)
+    say("\n<dl>C'est pour quoi ?<dg>\n ", 2)
+    say("Une vielle dame ouvre la\n porte\n ", 2)
+    say("\"Bonjour madame !\"", 2)
+    say("\"Je viens vous parler de", 2)
+    say("J<é>sus christ\"", 2)
+    say("\"Notre sauveur a tous\"", 2)
+    say("\"Auriez vous un peu de\n temps a m'accorder?\"\n ", 2)
+    say("Elle m'observe d'un\n regard doux.\n ", 2)
+    say("<dl>Entre donc<dg>", 2)
+    say("<dl>Viens prendre un th<é><dg>", 2)
     while State["inside"] ~= 1 do
       ask({
           {"Accepter",
             function()
               State["inside"]=1
-              say("\"Ce serai avec plasir\"")
+              say("\"Ce serai avec plasir\"", 2)
             end
           },
           {"Refuser",
             function()
-              say("\"Non merci\"")
-              say("Elle ne bouge pas")
-              say("Elle ne dit rien")
+              say("\"Non merci\"\n ", 2)
+              say("Elle ne bouge pas", 3)
+              say("Elle ne dit rien", 3)
             end
           }
         })
     end
-    say("<dl>L'eau est d<é>ja chaude<dg>")
+    say("<dl>L'eau est d<é>ja chaude<dg>\n ", 2)
     State["chap"]=2
   end
 end
