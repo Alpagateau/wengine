@@ -19,7 +19,7 @@
 
 int LuaServer();
 void say(std::string, float ds);
-void ask(const sol::table& pos);
+bool ask(const sol::table& pos);
 void loadImg(std::string path);
 void clr();
 #endif

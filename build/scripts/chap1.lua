@@ -7,8 +7,8 @@ nextState = function()
     say("Me voila\n ", 2)
     say("La porte est devant moi.\n ", 2)
     State["toque"] = 0
-    while State["toque"] == 0 do
-      ask({
+    while State["toque"] == 0 and State["fin"] == false do
+      a = ask({
           {"Relire l'adresse", 
             function()
               say("\n:0000FF:Relire l'adresse", 2)
@@ -20,6 +20,9 @@ nextState = function()
             State["toque"] = 1
           end},
         })
+      if a == false then
+        State["fin"] = true;
+      end
     end
     loadImg("door.tsi")
     say(":6A6A6A:Toc. toc. toc.\n ",2)
@@ -35,8 +38,8 @@ nextState = function()
     say("Elle m'observe d'un\n regard doux.\n ", 2)
     say("<dl>Entre donc<dg>", 2)
     say("<dl>Viens prendre un th<é><dg>", 2)
-    while State["inside"] ~= 1 do
-      ask({
+    while State["inside"] ~= 1 and State["fin"] == false do
+      a=ask({
           {"Accepter",
             function()
               State["inside"]=1
@@ -51,6 +54,9 @@ nextState = function()
             end
           }
         })
+      if a==false then
+        State["fin"] = true;
+      end
     end
     say("<dl>L'eau est d<é>ja chaude<dg>\n ", 2)
     State["chap"]=2

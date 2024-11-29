@@ -35,21 +35,26 @@ int LuaServer()
   lua["clr"] = clr;
   lua["loadImg"] = loadImg;
   lua.script_file("./index.lua");
-  while(lua["State"]["fin"] != true)
+  while(lua["State"]["fin"] != true && !Terminate)
   {
     if(Terminate)
     {
       lua["State"]["fin"] = true;
     }
-    lua["NextState"]();
+    else{
+      lua["NextState"]();
+    }
   }
   return 0;
 }
 
-void ask(const sol::table& pos)
+bool ask(const sol::table& pos)
 {
+  std::cout << "Tried asking" << std::endl;
   if(Terminate)
-    return;
+  {
+    return false;
+  }
   mtx.lock();opts.clear();mtx.unlock();
   std::vector<sol::function> fs;
   for(const auto& pair: pos)
@@ -77,21 +82,26 @@ void ask(const sol::table& pos)
   CanContinue = false;
   CanRead = ASK;
   mtx.unlock();
-  while(!CanContinue){}
-  fs[choice]();
+  while(!CanContinue && !Terminate){
+  }
+  if(!Terminate)
+    fs[choice]();
+  return true;
 }
 
 void say(std::string msg, float s)
 {
   if(!Terminate){
-    while(CanRead != NOTHING && CanRead > 2){}
+    while(CanRead != NOTHING && CanRead > 2 && !Terminate){}
     mtx.lock();
     CanRead = SAY;
     CanContinue = false;
     Message = msg;
     Waiting = (int)(s*10);
     mtx.unlock();
-    while(!CanContinue && !Terminate){}
+    while(!CanContinue && !Terminate)
+    {
+    }
   }
 }
 

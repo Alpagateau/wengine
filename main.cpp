@@ -31,5 +31,6 @@ int main(void)
   CanContinue = true;
   mtx.unlock();
   lua_thread.join();
+  std::cout << "C'est la fin les amis" << std::endl;
   return 0;
 }

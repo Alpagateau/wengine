@@ -40,7 +40,7 @@ int GameProcess()
     //FLAG_WINDOW_RESIZABLE | 
     FLAG_MSAA_4X_HINT
   );
-  
+  //SetTraceLogLevel(LOG_INFO | LOG_WARNING); 
   InitWindow(
     screenWidth, 
     screenHeight, 
@@ -169,7 +169,6 @@ int GameProcess()
       mtx.unlock();
     }
   }
-
   
   CloseAudioDevice();
   CloseWindow();

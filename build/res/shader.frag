@@ -15,7 +15,9 @@ out vec4 finalColor;
 
 const vec2 size = vec2(800, 450);   // Framebuffer size
 const float samples = 5.0;          // Pixels per axis; higher = bigger glow, worse performance
-const float quality = 2.5;          // Defines size factor: Lower = smaller glow, better quality
+const float quality = 1.2;          // Defines size factor: Lower = smaller glow, better quality
+const float offset = 1;
+const float frequency = 120;
 
 void main()
 {
@@ -25,19 +27,20 @@ void main()
     // Texel color fetching from texture sampler
     vec4 source = texture(texture0, fragTexCoord);
 
-    //const int range = 2;            // should be = (samples - 1)/2;
+    const int range = 2;            // should be = (samples - 1)/2;
 
-
-    //for (int x = -range; x <= range; x++)
-    //{
-    //    for (int y = -range; y <= range; y++)
-    //    {
-    //        sum += texture(texture0, fragTexCoord + vec2(x, y)*sizeFactor);
-    //    }
-    //}
+    for (int x = -range; x <= range; x++)
+    {
+        for (int y = -range; y <= range; y++)
+        {
+            sum += texture(texture0, fragTexCoord + vec2(x, y)*sizeFactor);
+        }
+    }
 
     // Calculate final fragment color
-    source.g *= 1.5f;
-    source.rb *= 0.9f;
-    finalColor = ((sum/(samples*samples)) + source)*colDiffuse;
+    float globalPos = (fragTexCoord.y + offset);
+    float wavePos = (1+cos((fract(globalPos) - 0.5)*3.14))/2.0;
+    float wavePos2 = cos((fract(globalPos*frequency) - 0.5)*3.14);
+
+    finalColor = ((sum/(samples*samples)) + source)*colDiffuse * wavePos * wavePos2;
 }
