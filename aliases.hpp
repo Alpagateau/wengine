@@ -41,7 +41,7 @@ const charAlias ctable[] = {
   (charAlias){"<downtriangle>"   ,  31},
   //first half
   (charAlias){"<house>"          , 127},
-  (charAlias){"Cced"             , 128},
+  (charAlias){"<Cced>"             , 128},
   (charAlias){"<ü>"              , 129},
   (charAlias){"<é>"              , 130},
   (charAlias){"<â>"              , 131},

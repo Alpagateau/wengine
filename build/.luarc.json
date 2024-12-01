@@ -1,0 +1,10 @@
+{
+  "diagnostics": {
+    "globals": [
+      "say",
+      "ask",
+      "loadImg",
+      "clr"
+    ]
+  }
+}
