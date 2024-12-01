@@ -25,6 +25,7 @@ int LuaServer()
   Settings_t temps;
   temps.font = lua["Font"].get<std::string>();
   temps.fontSize = lua["FontSize"].get<float>();
+  temps.shader = lua["Shader"].get<bool>();
   mtx.lock();
   settings = temps;
   settings.loaded = true;

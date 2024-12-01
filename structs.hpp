@@ -15,6 +15,7 @@ struct Settings_t
   bool loaded = false;
   std::string font;
   float fontSize = -1;
+  bool shader = false;
 };
 
 #endif

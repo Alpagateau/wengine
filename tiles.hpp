@@ -34,6 +34,7 @@ struct tilemap
   std::vector<tile> tiles;
   int maxLine = -1;
   int margin = 0;
+  int squish = 0;
 };
 
 int loadTilesetCR(std::string,tileset&,int,int);

@@ -17,7 +17,7 @@ extern std::string imgpath;
 
 int GameProcess()
 {
-  int screenWidth = 800;
+  int screenWidth = 1000;
   int screenHeight = 450; 
   
   std::string currentImg = "";
@@ -58,10 +58,11 @@ int GameProcess()
   loadTilesetCR("./res/"+settings.font, ts, 16, 16);
   txtview.scale = settings.fontSize;
   txtview.margin = 1;
+  txtview.squish = 2;
   qview.scale = settings.fontSize;
   imview.scale = settings.fontSize;
   
-  imview.posx = 25;
+  imview.posx = 35;
   imview.posy = 0;
   double curTime = GetTime();
   while (!WindowShouldClose()) // TO CHANGER 
@@ -198,16 +199,28 @@ int GameRender(
   EndTextureMode();
 
   BeginDrawing();
-    BeginShaderMode(shader);
+    if(settings.shader){ 
+      BeginShaderMode(shader);
+        DrawTextureRec(
+          target.texture, 
+          (Rectangle){0, 0, 
+            (float)target.texture.width, 
+            (float)-target.texture.height 
+            },
+          (Vector2){ 0, 0 }, 
+          WHITE);
+      EndShaderMode();
+    }else{
       DrawTextureRec(
-        target.texture, 
-        (Rectangle){0, 0, 
-          (float)target.texture.width, 
-          (float)-target.texture.height 
-          },
-        (Vector2){ 0, 0 }, 
-        WHITE);
-    EndShaderMode();
+          target.texture, 
+          (Rectangle){0, 0, 
+            (float)target.texture.width, 
+            (float)-target.texture.height 
+            },
+          (Vector2){ 0, 0 }, 
+          WHITE);
+
+    }
   EndDrawing();
   return 0;
 }

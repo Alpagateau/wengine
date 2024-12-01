@@ -28,7 +28,7 @@ int tiles::draw(tilemap &tm, tileset &ts, int maxX, int maxY)
     Rectangle fsize = {
       (float)nposx + tm.margin,
       (float)nposy + tm.margin,
-      s - 2*tm.margin,
+      s - 2*tm.margin - tm.squish,
       s - 2*tm.margin
     };
     DrawTexturePro(
