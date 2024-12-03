@@ -46,4 +46,7 @@ namespace tiles{
   int write(tilemap&,std::string,int,int,Color);
   int print(tilemap&,std::string,int,int,Color);
 }
+
+std::string wrap(std::string, int);
+
 #endif 

@@ -7,7 +7,7 @@ local imports = {
 State = {
   name = "Anon",
   fin = false,
-  chap = 3
+  chap = 1
 }
 
 function NextState()

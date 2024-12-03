@@ -26,17 +26,15 @@ nextState = function()
     end
     loadImg("door.tsi")
     say(":6A6A6A:Toc. toc. toc.",2)
-    say("\nJe vois une ombre passer",2)
-    say(" a travers le judas", 2)
+    say("\nJe vois une ombre passer a travers le judas", 3)
     say("\n<dl>C'est pour quoi ?<dg>", 2)
-    say("\nUne vielle dame ouvre la\n porte", 2)
+    say("\nUne vielle dame ouvre la porte", 2)
     say("\n\"Bonjour madame !\"", 2)
-    say("\"Je viens vous parler de", 2)
-    say("J<é>sus christ\"", 2)
+    say("\"Je viens vous parler de J<é>sus Christ\" !", 2)
     say("\"Notre sauveur <à> tous\"", 2)
-    say("\"Auriez vous un peu de\n temps <à> m'accorder?\"\n ", 2)
-    say("Elle m'observe d'un\n regard doux.\n ", 2)
-    say("<dl>Entre donc<dg>", 2)
+    say("\"Auriez vous un peu de temps <à> m'accorder?\"", 2)
+    say("\nElle m'observe d'un regard doux.", 2)
+    say("\n<dl>Entre donc<dg>", 2)
     say("<dl>Viens prendre un th<é><dg>", 2)
     while State["inside"] ~= 1 and State["fin"] == false do
       local a=ask({
@@ -53,7 +51,7 @@ nextState = function()
               else
                 State["refuser"] = State["refuser"]+1
               end
-              say("\"Non merci\"\n ", 2)
+              say("\"Non merci\"", 2)
               print("[LUA] : "..State["refuser"])
               if State["refuser"] > 4 then
                 say("C'est la fin, le tous dernier matin", 1)
@@ -70,7 +68,7 @@ nextState = function()
       end
     end
     if State["fin"] then return end
-    say("<dl>L'eau est d<é>ja chaude<dg>\n ", 2)
+    say("<dl>L'eau est d<é>ja chaude<dg>", 2)
     State["chap"]=2
   end
 end

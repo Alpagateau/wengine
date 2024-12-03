@@ -200,19 +200,20 @@ std::vector<std::string> split(std::string s, char c)
   return out;
 }
 
-std::string wrap(std::string msg, ignoreNL = true)
+std::string wrap(std::string msg, int limit)
 {
   std::string output;
-
-  for(int i = 0; i < msg.size(); i++)
+  std::vector<std::string> words = split(msg, ' '); 
+  int curw = 0;
+  for(int i = 0; i<words.size(); i++)
   {
-    if(msg[i] == '\n')
+    if(curw + words[i].size()>= limit)
     {
-      output.push_back(' '); 
+      curw = 1;
+      output += "\n ";
     }
-    else {
-      output.push_back(msg[i]);
-    }
+    output += words[i]+" ";
+    curw+=words[i].size()+1;
   }
   return output;
 }

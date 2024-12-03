@@ -72,8 +72,9 @@ int GameProcess()
       case SAY:
       if(Message != "")
       {
-        tiles::print(txtview, 
-            Message, 0, 
+        tiles::print(
+            txtview,
+            wrap(Message, 36), 0, 
             txtview.maxLine+1, 
             WHITE);
         Message = "";
