@@ -1,12 +1,13 @@
 local imports = {
   require("scripts/chap1"),
-  require("scripts/chap2")
+  require("scripts/chap2"),
+  require("scripts/chap3")
 }
 
 State = {
   name = "Anon",
   fin = false,
-  chap = 1
+  chap = 3
 }
 
 function NextState()

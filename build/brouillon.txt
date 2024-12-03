@@ -1,33 +1,121 @@
 “Donne-moi quelques instants le temps que j'aille chercher les gâteaux.”
-La vieille dame fouille dans ses placards. Ils semblent bien plus profonds qu'il n'en ont l'air. Devant moi, à côté du service à thé, se tient un verre Duralex. 
+La vieille dame fouille dans ses placards. 
+Ils semblent bien plus profonds qu'il n'en ont 
+l'air. Devant moi, à côté du service à thé, 
+se tient un verre Duralex. 
 -Regarder mon âge > 1
 -Attendre patiemment
 
+1 > Je regarde mon âge au fond de ce dernier.
+66 indique celui-ci, 
+bien qu'un troisième 6 semble être très mal gravé 
+au côté des deux autres…
+
+<<Voilà les gâteaux, il ne reste plus que 
+l’infusion et tu es à moi>>
+“Haha, pas de problème !”
+L’expression, ce n’est pas plutôt ‘je suis à toi’ 
+d’habitude ? Pauvre d’elle, elle ne semble pas 
+très adroite avec les mots.
+
+Elle pose sur la table… une boîte de matériel de 
+couture ? Je dirige mon regard sur la grand-mère,
+tout penaud. 
+Elle n’a pas l’air de réagir à son erreur et 
+continue sa préparation comme si de rien n’était.
+
+-Ouvrir la boîte > 1
+-Ne rien faire > 2
+
+1 > Par automatisme, je jette un coup d'œil au 
+contenu de la boîte. Nom d’une pipe ! Des biscuit'
+britanniques ? Dans ce pays ? En cette saison ? 
+Localisés entièrement dans une boîte de nécessaire
+de couture ? Voilà qui est des plus étranges. 
+Décidément, les personnes du troisième âge ne 
+cesseront jamais de m'impressionner !
+
+2 > Non, elle à l’air confiante de son geste. 
+Je vais lui accorder le bénéfice du doute et 
+partir du principe qu’il s’agit d’une distante 
+tradition.
+
+===DONE===
+
+<<Voici le thé. Ne t’ébouillante pas, la tasse 
+risque d’être très chaude.>>
+“Merci beaucoup, je tâcherais de faire attention.”
+Elle me sert mon thé… de la main gauche ? Voilà 
+qui est plutôt irrespectueux ! J’espère pour elle 
+qu’elle n’est pas réellement gauchère, ce serait 
+d’une disgrâce !!! Mais soit, passons. En tant que
+bon chrétien, il faut savoir pardonner même les 
+fautes les plus graves…
+
+== NEW DATA == (to be checked)
+<<Donne-moi quelques instants le temps que j'aille
+chercher les gâteaux.>>
+La vieille dame fouille dans ses placards. Ils 
+semblent bien plus profonds qu'il n'en ont l'air.
+Devant moi, à côté du service à thé, se tient un 
+verre Duralex. 
+
+-Regarder mon âge > 1
+-Attendre patiemment
 
 1 > Je regarde mon âge au fond de ce dernier.
-66 indique celui-ci, bien qu'un troisième 6 semble être très mal gravé au côté des deux autres…
+66 indique celui-ci, bien qu'un troisième 6 
+semble être très mal gravé au côté des deux 
+autres…
 
-
-<<Voilà les gâteaux, il ne reste plus que l’infusion et tu es à moi>>
+<<Voilà les gâteaux, il ne reste plus que 
+l’infusion et tu es à moi>>
 “Haha, pas de problème !”
-L’expression, ce n’est pas plutôt ‘je suis à toi’ d’habitude ? Pauvre d’elle, elle ne semble pas très adroite avec les mots.
-Elle pose sur la table… une boîte de matériel de couture ? Je dirige mon regard sur la grand-mère,
-tout penaud. 
-Elle n’a pas l’air de réagir à son erreur et continue sa préparation comme si de rien n’était.
-
+L’expression, ce n’est pas plutôt ‘je suis à toi’ 
+d’habitude ? Pauvre d’elle, elle ne semble pas 
+très adroite avec les mots.
+Elle pose sur la table… une boîte de matériel de 
+couture ? Je dirige mon regard sur la grand-mère,
+tout penaud. Elle n’a pas l’air de réagir à son 
+erreur et continue sa préparation comme si de 
+rien n’était.
 
 -Ouvrir la boîte > 1
 -Ne rien faire > 2
 
 
-1 > Par automatisme, je jette un coup d'œil au contenu de la boîte. Nom d’une pipe ! Des biscuits britanniques ? Dans ce pays ? En cette saison ? Localisés entièrement dans une boîte de nécessaire de couture ? Voilà qui est des plus étranges. Décidément, les personnes du troisième âge ne cesseront jamais de m'impressionner !
+1 > Par automatisme, je jette un coup d'œil au 
+contenu de la boîte. Nom d’une pipe ! Des biscuits
+britanniques ? Dans ce pays ? En cette saison ? 
+Localisés entièrement dans une boîte de nécessaire
+de couture ? Voilà qui est des plus étranges. 
+Décidément, les personnes du troisième âge ne 
+cesseront jamais de m'impressionner !
+
+2 > Non, elle à l’air confiante dans son geste. 
+Je vais lui accorder le bénéfice du doute et 
+partir du principe qu’il s’agit d’une distante 
+tradition.
+
+<<Voici le thé. Ne t’ébouillante pas, la tasse 
+risque d’être très chaude.>>
 
 
-2 > Non, elle à l’air confiante de son geste. Je vais lui accorder le bénéfice du doute et partir du principe qu’il s’agit d’une distante tradition.
+-Accepter l’infusion > 1
+-Demander un café > 2
 
-===DONE===
+
+1 > “Merci beaucoup, je tâcherais de faire attention !”
 
 
-<<Voici le thé. Ne t’ébouillante pas, la tasse risque d’être très chaude.>>
-“Merci beaucoup, je tâcherais de faire attention.”
 Elle me sert mon thé… de la main gauche ? Voilà qui est plutôt irrespectueux ! J’espère pour elle qu’elle n’est pas réellement gauchère, ce serait d’une disgrâce !!! Mais soit, passons. En tant que bon chrétien, il faut savoir pardonner même les fautes les plus graves…
+2 > ”Pourrais-je plutôt avoir un café”
+
+
+Mon hôte me fixe droit dans les yeux, son regard tout aussi perçant que vide.
+“S’il vous plaît ?”
+Après un blanc de 2 secondes (environ 10 en ressenti), elle sort un thermos de sa poche et me sert un café.
+
+
+La vieille dame pose le sucre juste devant moi, sans même m’en proposer, et se sert un thé à son tour. 
+

@@ -200,6 +200,23 @@ std::vector<std::string> split(std::string s, char c)
   return out;
 }
 
+std::string wrap(std::string msg, ignoreNL = true)
+{
+  std::string output;
+
+  for(int i = 0; i < msg.size(); i++)
+  {
+    if(msg[i] == '\n')
+    {
+      output.push_back(' '); 
+    }
+    else {
+      output.push_back(msg[i]);
+    }
+  }
+  return output;
+}
+
 int tiles::print(tilemap &tm,std::string msg, int px, int py, Color col)
 {
   std::vector<std::string> lines = split(msg, '\n');

@@ -1,11 +1,12 @@
 return {
   nextState = function()
     if State["chap"] ~= 3 then return end
+    loadImg("frame.tsi")
     say("<dl>Donne-moi quelques instants<dg>", 3)
     say("<dl>Je vais chercher des gateaux<dg>", 3)
     say("\nElle farfouille dans ses placards", 2)
-    say(" qui semblent bien plus profonds qu'ils en ont l'air", 4)
-    say("Sur la table devant moi, se tient un verre Duralex", 3)
+    say(" qui semblent bien plus profonds\n qu'ils en ont l'air", 4)
+    say("Sur la table devant moi,\n se tient un verre Duralex", 3)
     ask({
       {"Regarder mon age",
         function()
@@ -14,9 +15,9 @@ return {
         end},
       {"Attendre patiemment", function() end}
     })
-    say("\n<dl>Voil<à> les g<â>teaux<dg>")
-    say("\n<dl>Plus que les infusions et tu es a moi<dg>")
-    say("\n\"Superbe, pas de probl<è>mes\"")
+    say("\n<dl>Voil<à> les g<â>teaux<dg>", 3)
+    say("\n<dl>Plus que les infusions et tu es a moi<dg>", 3)
+    say("\n\"Superbe, pas de probl<è>mes\"", 3)
     say("\nL'expression n'est pas plut<ô>t \'Je suis a toi\'?", 2)
     say("La pauvre n'est pas abile de ses mots", 3)
 
@@ -43,6 +44,20 @@ return {
       say("\nElle a l'air confiante de son geste", 3)
       say("Je lui accorde le b<é>n<é>fice du doute", 3)
     end
+    say("<dl>Voici le th<é><dg>", 2)
+    say("<dl>Ne t'<é>bouillante pas<dg>", 3)
+    say("\"Merci beaucoup\"", 3)
+
+    say("Elle verse le th<é>", 1)
+    say("DE LA MAIN GAUCHE ?!",3)
+    say("Voil<à> qui est irrespectueux !", 3)
+    say("Je prie qu'elle ne soit pas"..
+       " r<é>ellement gauch<è>re", 3)
+    say("ce serait disgracieux")
+    say("...", 2)
+    say("Bon, passons", 2)
+    say("En tant que bon ch<é>tien,"..
+        " je me dois de lui pardonner", 3)
 
     State["chap"] = 1
   end
