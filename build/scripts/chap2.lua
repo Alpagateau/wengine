@@ -5,21 +5,21 @@ return {
       loadImg("kettle.tsi")
       State["kettle"] = 0
       clr()
-      say("\nJe m'essuie les pieds\n sur le paillasson", 2)
-      say("\nsallisant le texte qui\n y figure", 2)
+      say("\nJe m'essuie les pieds sur le paillasson", 2)
+      say("\nsallisant le texte qui y figure", 2)
       say("\n\'Abandon All Hope\'", 2)
       say("\'All Ye Who Enter\'", 1)
-      say("\nJe sais pas ce que <cced>a\n veux dire", 3)
+      say("\nJe sais pas ce que <cced>a veux dire", 3)
       say("\nJe la suis dans l'entr<é>e", 2)
-      say("\nMes pas grinces sur le\n vieux parquet", 2)
-      say(" Les murs verts se marient\n"..
-          " tres bien avec les vases\n"..
-          " et autres babioles qui\n"..
-          " d<é>corent le couloir", 5)
-      say("Au bout de ce couloir,\n"..
-          " je vois la fenetre qui\n"..
-          " donne sur une cour\n".." interieur", 5)
-      say("\n<dl>Viens donc t'assoir\n dans la cuisine<dg>", 2)
+      say("\nMes pas grinces sur le vieux parquet", 2)
+      say("Les murs verts se marient"..
+          " tres bien avec les vases"..
+          " et autres babioles qui"..
+          " d<é>corent le couloir", 6)
+      say("\nAu bout de ce couloir,"..
+          " je vois la fenetre qui"..
+          " donne sur une cour".." interieur", 6)
+      say("\n<dl>Viens donc t'assoir dans la cuisine<dg>", 2)
       State["explored"] = 0
       State["in_kitchen"] = 0
       while State["in_kitchen"] == 0 do
@@ -28,28 +28,28 @@ return {
             {"Explorer", function()
               say("\n:0000EE:Explorer", 2)
               State["in_kitchen"]=0
-              State["explored"] = State["epxlored"]+1
+              State["explored"] = State["explored"]+1
             end}
           })
         if State["in_kitchen"] == 0 then
           if State["explored"] == 1 then
-            say("\nSur le mur, quelques\n"..
-                " photos represente une\n"..
-                " jeune femme, fusils a la main\n ,au cot<é>"..
-                " d'un \n<é>l<é>phant mort", 5)
-            say("\nUne autre montre un\n"..
-                " groupe d'ecoterroriste\n"..
-                " devant une <é>glise\n", 2)
-            say("L'appartement n'est pas\n"..
+            say("\nSur le mur, quelques"..
+                " photos represente une"..
+                " jeune femme, fusils a la main ,au cot<é>"..
+                " d'un <é>l<é>phant mort", 6)
+            say("\nUne autre montre un"..
+                " groupe d'ecoterroriste"..
+                " devant une <é>glise", 3)
+            say("\nL'appartement n'est pas"..
                 " bien grand en soit", 3)
-            say("Mais la d<é>coration lui\n"..
+            say("\nMais la d<é>coration lui"..
                 " lui done des airs ", 3)
           end
           if State["explored"] == 2 then
-            say("Depuis l'entr<é>e, j'apper<cced>ois\n".." un crucifix", 2)
-            say("La pauvre ne doit pas parler\n"..
+            say("\nDepuis l'entr<é>e, j'apper<cced>ois un crucifix", 2)
+            say("\nLa pauvre ne doit pas parler"..
                 " latin", 3)
-            say("\nAu lieu du INRI habituel,\n il est <é>crit INPI...", 3)
+            say("\nAu lieu du INRI habituel, il est <é>crit INPI...", 3)
             say("\nPi<è>tre qualit<é>", 2)
             say("\nJe devrai la rejoindre maintenant", 2)
             State["in_kitchen"] = 1
@@ -60,7 +60,7 @@ return {
     end
 
 
-    say("Je m'assoie <à> table", 2)
+    say("\nJe m'assoie <à> table", 4)
     State["chap"] = 3
   end
 }

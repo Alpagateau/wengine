@@ -4,7 +4,7 @@ nextState = function()
   if(State["intro"] == nil) then
     State["intro"] = 0
     loadImg("tie.tsi")
-    say("Me voila", 2)
+    say("\nMe voila", 2)
     say("\nLa porte est devant moi.", 2)
     State["toque"] = 0
     while State["toque"] == 0 and State["fin"] == false do
@@ -35,13 +35,13 @@ nextState = function()
     say("\"Auriez vous un peu de temps <à> m'accorder?\"", 2)
     say("\nElle m'observe d'un regard doux.", 2)
     say("\n<dl>Entre donc<dg>", 2)
-    say("<dl>Viens prendre un th<é><dg>", 2)
+    say("<dl>Viens prendre un th<é><dg>\n", 2)
     while State["inside"] ~= 1 and State["fin"] == false do
       local a=ask({
           {"Accepter",
             function()
               State["inside"]=1
-              say("\"Ce serait avec plasir\"", 2)
+              say("\n\"Ce serait avec plasir\"", 2)
             end
           },
           {"Refuser",
@@ -57,8 +57,8 @@ nextState = function()
                 say("C'est la fin, le tous dernier matin", 1)
                 State["fin"] = true
               else
-                say("Elle ne bouge pas", State["refuser"])
-                say("Elle ne dit rien", State["refuser"])
+                say("\nElle ne bouge pas", State["refuser"])
+                say("\nElle ne dit rien", State["refuser"])
               end
             end
           }

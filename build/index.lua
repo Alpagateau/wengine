@@ -1,7 +1,8 @@
 local imports = {
   require("scripts/chap1"),
   require("scripts/chap2"),
-  require("scripts/chap3")
+  require("scripts/chap3"),
+  require("scripts/chap4")
 }
 
 State = {

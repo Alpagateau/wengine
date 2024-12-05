@@ -51,7 +51,7 @@ int LuaServer()
 
 bool ask(const sol::table& pos)
 {
-  std::cout << "Tried asking" << std::endl;
+  //std::cout << "Tried asking" << std::endl;
   if(Terminate)
   {
     return false;
