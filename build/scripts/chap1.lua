@@ -4,19 +4,19 @@ nextState = function()
   if(State["intro"] == nil) then
     State["intro"] = 0
     loadImg("tie.tsi")
-    say("\nMe voila", 2)
-    say("\nLa porte est devant moi.", 2)
+    say("Me voila", 2)
+    say("La porte est devant moi.", 2)
     State["toque"] = 0
     while State["toque"] == 0 and State["fin"] == false do
       local a = ask({
           {"Relire l'adresse",
             function()
-              say("\n:0000FF:Relire l'adresse", 2)
-              say("\n92 rue des Vignoles", 2)
+              say(":0000FF:Relire l'adresse", 2)
+              say("92 rue des Vignoles", 2)
             end},
           {"Toquer",
           function()
-            say("\n:0000FF:Toquer", 2)
+            say(":0000FF:Toquer", 2)
             State["toque"] = 1
           end},
         })
@@ -26,11 +26,11 @@ nextState = function()
     end
     loadImg("door.tsi")
     say(":6A6A6A:Toc. toc. toc.",2)
-    say("\nJe vois une ombre passer a travers le judas", 3)
+    say("Je vois une ombre passer a travers le judas", 3)
     say("\n<dl>C'est pour quoi ?<dg>", 2)
     say("\nUne vielle dame ouvre la porte", 2)
     say("\n\"Bonjour madame !\"", 2)
-    say("\"Je viens vous parler de J<é>sus Christ\" !", 2)
+    say("\n\"Je viens vous parler de J<é>sus Christ\" !", 2)
     say("\"Notre sauveur <à> tous\"", 2)
     say("\"Auriez vous un peu de temps <à> m'accorder?\"", 2)
     say("\nElle m'observe d'un regard doux.", 2)

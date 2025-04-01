@@ -8,133 +8,138 @@
 
 extern std::mutex mtx;
 extern Settings_t settings;
-extern int CanRead, Waiting;
-extern bool CanContinue, Terminate;
-extern std::string Message;
-extern std::vector<std::string> opts;
-extern int choice;
-extern std::string imgpath;
+extern Event_t event;
+extern bool LuaRun, Terminate; 
+//LuaRun : Is lua able to run ? false if waiting for something on cpp side 
+//Terminate : safe switch. Should prevent all activity and quit every function if true
 
-int GameProcess()
-{
-  int screenWidth = 1000;
-  int screenHeight = 450; 
-  
-  std::string currentImg = "";
+tilemap txtview;
+tilemap qview;
+tilemap imview; 
+tileset ts;
+const int screenWidth = 1000;
+const int screenHeight = 450;
+std::string currentImg = "";
+RenderTexture target;
+Shader shader;
+int choice = -1; //Selected answer (-1 if nothing to ask)
+int Waiting = 0; //Time before next msg
 
-  tileset ts;
-  tilemap txtview;
-  tilemap qview;
-  tilemap imview;
-  txtview.scale = 20.0f; 
-  bool l = false;
+
+int GameProcess(bool verbose)
+{ 
+  bool printed_setting_message = false;
+
   while(!settings.loaded)
   {
-    if(!l){
-    std::cout << "Waiting for settings" << std::endl;
-      l=true;
+    if(!printed_setting_message){
+      std::cout << "[C++] Waiting for settings" << std::endl;
+      printed_setting_message=true;
     }
   }
 
-  SetConfigFlags(
-    //FLAG_WINDOW_RESIZABLE | 
-    FLAG_MSAA_4X_HINT
-  );
+  SetConfigFlags(FLAG_MSAA_4X_HINT);
   //SetTraceLogLevel(LOG_INFO | LOG_WARNING); 
+  
   InitWindow(
     screenWidth, 
     screenHeight, 
-    "Console - Wiremole.exe");
+    "Console - 91 Rue Des Vignoles.exe"
+  );
+
   InitAudioDevice();
-  SetTargetFPS(60); // Set our game to run at 60 frames-per-second 
+  SetTargetFPS(60);
   
   //Load sounds
-  Sound blipt = LoadSound("./res/blipt.wav");
-  Sound blipa = LoadSound("./res/blipa.wav");
+  Sound blipt = LoadSound("./res/blipt.wav"); //text sound
+  Sound blipa = LoadSound("./res/blipa.wav"); //question sound
 
-  RenderTexture2D target = LoadRenderTexture(screenWidth, screenHeight);
-  Shader shader = LoadShader(0, TextFormat("./res/shader.frag", GLSL_VERSION));
+  target = LoadRenderTexture(screenWidth, screenHeight); //Used for shaders
+  shader = LoadShader(0, TextFormat("./res/shader.frag", GLSL_VERSION)); //Said shader
 
+  //Loading font settings
   loadTilesetCR("./res/"+settings.font, ts, 16, 16);
   txtview.scale = settings.fontSize;
   txtview.margin = 1;
   txtview.squish = 2;
   qview.scale = settings.fontSize;
   imview.scale = settings.fontSize;
-  
+ 
+  std::string imgpath;
   imview.posx = 35;
   imview.posy = 0;
+  
+  std::vector<std::string> opts;
   double curTime = GetTime();
   while (!WindowShouldClose()) // TO CHANGER 
   {
     mtx.lock();
-    switch(CanRead){
+    switch(event.type){
       case SAY:
-      if(Message != "")
       {
-        tiles::print(
-            txtview,
-            wrap(Message, 36), 0, 
-            txtview.maxLine+1, 
-            WHITE);
-        Message = "";
-        PlaySound(blipt);
-      }
-      CanRead = NOTHING;
-      break;
-      case ASK: 
-        if(opts.size() > 0)
-        {
-          if(choice < 0)
-            choice = opts.size()-1;
-          if(choice > opts.size()-1)
-            choice = 0;
-          qview.tiles.clear();
-          qview.maxLine = -1;
-          for(int i = 0; i < opts.size(); i ++)
-          {
-            tiles::write(
-              qview, 
-              (i==choice?"<rightarrow>":" ")+opts[i], 
-              0, i, 
-              (i==choice)?BLUE:WHITE);
-          }
+        //std::cout << "SAY : " << event.msg << std::endl;
+        if(event.msg != "")
+        { 
+          tiles::print(txtview, wrap(event.msg, 36), 0, txtview.maxLine+1, WHITE);
+          PlaySound(blipt);
         }
-      break;
+        event.type = NOTHING;
+        break;
+      }
+      case ASK:
+      {
+        std::cout << "[C++] ASK : " << event.msg  << " : " << event.data << std::endl; 
+        //Read the options
+        if(event.data == 0){ event.type = NOTHING;}
+        else
+        {
+          event.type = WAIT;
+          Waiting = -event.data; //Negative waiting times = serial com
+          opts.push_back(event.msg);
+        }
+        break;
+      }
+      case WAIT:
+        //std::cout << "WAIT : " << event.data << "\r"; 
+        Waiting = event.data;
+        break;
       case CLR:
         txtview.tiles.clear();
         txtview.maxLine = -1;
-        CanRead = 0;
-      break;
+        event.type = NOTHING;
+        break;
+      case IMG:
+        imgpath = event.msg;
+        loadTSI(imgpath, imview);
+        std::cout << "[C++] Loading image : " << imgpath << std::endl; 
+        event.type = NOTHING;
+        break;
+      default:
+        break;
     }
     mtx.unlock();
-    
-    if(imgpath != currentImg)
-    {
-      currentImg = imgpath;
-      loadTSI(imgpath, imview);
-    }
-    //Draw on the screen hehe
-    screenWidth = GetScreenWidth();
-    screenHeight = GetScreenHeight(); 
+
+    //To rework 
     //place textview at the bottom of the screen 
-    int npy = (int)std::floor((float)screenHeight/txtview.scale)-(txtview.maxLine+1);
-    if(CanRead == ASK)
-    {
-      npy -= opts.size();
-    }
-    int nop = (int)std::floor((float)screenHeight/qview.scale)-(qview.maxLine+1);
-    txtview.posy = npy;
-    qview.posy = nop;
+    int txt_pos = std::floor((float)screenHeight/txtview.scale)-(txtview.maxLine+1);
+    txt_pos -= opts.size();
+    int q_pos = std::floor((float)screenHeight/qview.scale)-(qview.maxLine+1);
+
+    txtview.posy = txt_pos;
+    qview.posy = q_pos;
     
-     GameRender(
-      txtview, qview, imview, ts, 
-      screenWidth, screenHeight,
-      currentImg, target, shader);
-    //-------
-    //INPUTS 
-    //-------
-    if(CanRead == ASK){ 
+    GameRender();
+    
+    if(event.type == WAIT && opts.size() > 0){ 
+      qview.tiles.clear(); //Rewrite whole question screen
+      qview.maxLine = 0;
+      for(int i = 0; i < opts.size(); i++)
+      {
+        std::string o = opts[i];
+        if(i == choice){o = "<rightarrow>:0000FF:" + o;}
+        else{o=" "+o;}
+        tiles::print(qview,o, 0, qview.maxLine+1,WHITE);
+      }
       if(IsKeyPressed(KEY_UP))
       {
         choice++;
@@ -145,83 +150,76 @@ int GameProcess()
         choice--;
         PlaySound(blipa);
       }
-    }
-    
-    if(!CanContinue && CanRead == ASK)
-    {
-      if(IsKeyDown(KEY_ENTER))
+      if(choice < 0)
       {
-        mtx.lock();
-        CanContinue = true;
-        CanRead = NOTHING;
+        choice = opts.size()-1;
+      }
+      else if(choice >= opts.size())
+      {
+        choice = 0;
+      }
+      if(IsKeyDown(KEY_ENTER) && !LuaRun)
+      {
+        mtx.lock(); 
+        std::cout << "[C++] Validated : " << choice << std::endl;
+        event.type = RESPONSE;
+        event.data = choice;
+        LuaRun = true;
         mtx.unlock();
+        qview.tiles.clear();
+        opts.clear();
         curTime = GetTime();
       }
     }
-
-    if(GetTime()-curTime > 0.1 && CanRead != ASK && Waiting > 0)
+    
+    if(GetTime()-curTime > 0.1 && Waiting > 0)
     {
       curTime = GetTime();
       mtx.lock();
       Waiting--;
+      event.data--;
       if(Waiting == 0)
       {
-        CanContinue = true;
+        LuaRun = true;
+        event.type = NOTHING;
       }
       mtx.unlock();
     }
   }
   
   CloseAudioDevice();
-  CloseWindow();
+  CloseWindow(); 
   mtx.lock();
-  Terminate = true;
+    Terminate = true;
   mtx.unlock();
-
   return 0;
 }
 
-int GameRender(
-  tilemap& txtview, 
-  tilemap& qview, 
-  tilemap& imview, 
-  tileset& ts, 
-  int screenWidth, 
-  int screenHeight,
-  std::string currentImg,
-  RenderTexture& target,
-  Shader& shader)
+int GameRender()
 {
+  std::string debug = "Event Type :" + std::to_string(event.type) 
+                    + "\nEvent Data :" + std::to_string(event.data)
+                    + "\nEvent Msg  :\"" + event.msg + "\"";   
+
   BeginTextureMode(target);
-    ClearBackground(BLACK);
+    ClearBackground(BLACK); 
     tiles::draw(txtview, ts, screenWidth, screenHeight);
-    if(CanRead == ASK){tiles::draw(qview, ts, screenWidth, screenHeight);}
-    if(currentImg != ""){tiles::draw(imview, ts, screenWidth, screenHeight);}
+    tiles::draw(qview, ts, screenWidth, screenHeight);
+    tiles::draw(imview, ts, screenWidth, screenHeight);
+    DrawText(debug.c_str(), 4, 4, 20, GREEN);
   EndTextureMode();
 
   BeginDrawing();
-    if(settings.shader){ 
-      BeginShaderMode(shader);
-        DrawTextureRec(
-          target.texture, 
-          (Rectangle){0, 0, 
-            (float)target.texture.width, 
-            (float)-target.texture.height 
-            },
-          (Vector2){ 0, 0 }, 
-          WHITE);
-      EndShaderMode();
-    }else{
-      DrawTextureRec(
-          target.texture, 
-          (Rectangle){0, 0, 
-            (float)target.texture.width, 
-            (float)-target.texture.height 
-            },
-          (Vector2){ 0, 0 }, 
-          WHITE);
-
-    }
+  if(settings.shader){BeginShaderMode(shader);}
+    DrawTextureRec(
+      target.texture, 
+      (Rectangle){0, 0, 
+        (float)target.texture.width, 
+        (float)-target.texture.height 
+      },
+      (Vector2){ 0, 0 }, 
+      WHITE);
+  if(settings.shader){EndShaderMode();}
   EndDrawing();
   return 0;
 }
@@ -231,6 +229,8 @@ int loadTSI(std::string path, tilemap& tm)
 {
   std::string myText;
   std::ifstream readim("./res/"+path);
+  if(readim.fail())
+    std::cout << "[C++] Couldn't open " << path << std::endl;
   tm.tiles.clear();
   while(getline(readim, myText))
   {

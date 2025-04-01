@@ -13,15 +13,6 @@
 #endif
 
 int loadTSI(std::string path, tilemap&);
-int GameProcess();
-int GameRender(
-  tilemap& txtview,
-  tilemap& qview,
-  tilemap& imview,
-  tileset& ts, 
-  int screenWidth, 
-  int screenHeight,
-  std::string currentImg,
-  RenderTexture& target,
-  Shader& shader);
+int GameProcess(bool);
+int GameRender();
 #endif

@@ -2,12 +2,13 @@
 
 extern std::mutex mtx;
 extern Settings_t settings; 
-extern int CanRead, Waiting; 
-extern bool CanContinue, Terminate;
-extern std::string Message;
-extern std::vector<std::string> opts;
-extern int choice;
-extern std::string imgpath;
+extern Event_t event;
+//extern int CanRead, Waiting; 
+extern bool LuaRun, Terminate;
+//extern std::string Message;
+//extern std::vector<std::string> opts;
+//extern int choice;
+//extern std::string imgpath;
 
 int LuaServer()
 {
@@ -56,7 +57,6 @@ bool ask(const sol::table& pos)
   {
     return false;
   }
-  mtx.lock();opts.clear();mtx.unlock();
   std::vector<sol::function> fs;
   for(const auto& pair: pos)
   {
@@ -68,8 +68,11 @@ bool ask(const sol::table& pos)
         //work with the string here
         std::string s = subt[1].get<std::string>();
         mtx.lock();
-        opts.push_back(s);
+        event.type = ASK;
+        event.msg = s;
+        event.data = 9;
         mtx.unlock();
+        while(event.type == ASK){}
       }
       if(subt[2].is<sol::function>())
       {
@@ -80,36 +83,54 @@ bool ask(const sol::table& pos)
     }
   }
   mtx.lock();
-  CanContinue = false;
-  CanRead = ASK;
+  event.type = ASK;
+  event.msg = "";
+  event.data = 0;
   mtx.unlock();
-  while(!CanContinue && !Terminate){
-  }
+  mtx.lock();
+  LuaRun = false;
+  event.type = WAIT;
+  mtx.unlock();
+  while(!LuaRun && !Terminate && event.type != RESPONSE)
+  {}
+  std::cout << "Validated by [LUA]" << std::endl; 
+  int temp_data = event.data;
+  mtx.lock();
+  event.data = 0; 
+  event.msg = "";
+  event.type = NOTHING;
+  mtx.unlock();
   if(!Terminate)
-    fs[choice]();
+    fs[temp_data](); 
+  //std::cout << "[C++] End of SAY" << std::endl;
   return true;
 }
 
 void say(std::string msg, float s)
 {
   if(!Terminate){
-    while(CanRead != NOTHING && CanRead > 2 && !Terminate){}
+    while(event.type != NOTHING && !Terminate){}
     mtx.lock();
-    CanRead = SAY;
-    CanContinue = false;
-    Message = msg;
-    Waiting = (int)(s*10);
+    event.type = SAY;
+    LuaRun = false;
+    event.msg = msg;
     mtx.unlock();
-    while(!CanContinue && !Terminate)
-    {
-    }
+    while(event.type != NOTHING){}
+    mtx.lock();
+    event.msg = "";
+    event.data = (int)(s*10);
+    event.type = WAIT;
+    mtx.unlock();
+    while(!LuaRun && !Terminate){}
   }
 }
 
 void clr()
 {
   mtx.lock();
-  CanRead = CLR;
+  event.type = CLR;
+  event.data = 0;
+  event.msg = "";
   mtx.unlock();
 }
 
@@ -117,6 +138,8 @@ void loadImg(std::string path)
 {
   if(Terminate){return;}
   mtx.lock();
-  imgpath = path;
+  event.msg = path;
+  event.type = IMG;
+  event.data = 0;
   mtx.unlock();
 }
